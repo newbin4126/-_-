@@ -1,8 +1,24 @@
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// API Key가 설정되지 않았을 때를 대비한 안전한 초기화
+const apiKey = process.env.API_KEY;
+let ai: GoogleGenAI | null = null;
+
+if (apiKey) {
+  try {
+    ai = new GoogleGenAI({ apiKey: apiKey });
+  } catch (error) {
+    console.error("Gemini Client Init Error:", error);
+  }
+}
 
 export const getEncouragement = async (taskTitle: string): Promise<string> => {
+  // API Key가 없거나 초기화 실패 시 기본 메시지 반환 (앱이 멈추지 않음)
+  if (!ai) {
+    console.warn("Gemini API Key is missing. Using fallback message.");
+    return "한 걸음 더 나아간 당신을 응원해요.";
+  }
+
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
@@ -19,6 +35,9 @@ export const getEncouragement = async (taskTitle: string): Promise<string> => {
 };
 
 export const getSuggestedChallenge = async (): Promise<string> => {
+    if (!ai) {
+        return "좋아하는 음악 한 곡 듣기";
+    }
     try {
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',

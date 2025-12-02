@@ -6,7 +6,8 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
     define: {
-      'process.env.API_KEY': JSON.stringify(env.API_KEY)
+      // API Key가 없으면 빈 문자열('')을 넣어 에러 방지
+      'process.env.API_KEY': JSON.stringify(env.API_KEY || '')
     }
   };
 });
