@@ -1,13 +1,8 @@
 import { GoogleGenAI } from "@google/genai";
 
-const apiKey = process.env.API_KEY || '';
-const ai = new GoogleGenAI({ apiKey });
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const getEncouragement = async (taskTitle: string): Promise<string> => {
-  if (!apiKey) {
-    return "오늘 하루도 정말 고생 많았어요. 당신의 속도대로 가면 돼요.";
-  }
-
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
@@ -24,8 +19,6 @@ export const getEncouragement = async (taskTitle: string): Promise<string> => {
 };
 
 export const getSuggestedChallenge = async (): Promise<string> => {
-    if (!apiKey) return "창문 열고 1분간 환기하기";
-    
     try {
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
