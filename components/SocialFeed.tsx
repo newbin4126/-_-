@@ -16,15 +16,29 @@ export const SocialFeed: React.FC = () => {
   }, []);
 
   const handleCheer = (id: string) => {
-    if (cheered.has(id)) return;
+    const isAlreadyCheered = cheered.has(id);
     
-    db.cheerPost(id);
-    setCheered(prev => new Set(prev).add(id));
-    
-    // Optimistic UI update
-    setFeed(prev => prev.map(item => 
-      item.id === id ? { ...item, cheers: item.cheers + 1 } : item
-    ));
+    if (isAlreadyCheered) {
+        // Un-cheer
+        db.unCheerPost(id);
+        setCheered(prev => {
+            const next = new Set(prev);
+            next.delete(id);
+            return next;
+        });
+        // Optimistic UI update (decrement)
+        setFeed(prev => prev.map(item => 
+          item.id === id ? { ...item, cheers: Math.max(0, item.cheers - 1) } : item
+        ));
+    } else {
+        // Cheer
+        db.cheerPost(id);
+        setCheered(prev => new Set(prev).add(id));
+        // Optimistic UI update (increment)
+        setFeed(prev => prev.map(item => 
+          item.id === id ? { ...item, cheers: item.cheers + 1 } : item
+        ));
+    }
   };
 
   const formatTime = (ts: number) => {
@@ -56,12 +70,14 @@ export const SocialFeed: React.FC = () => {
           <button 
             onClick={() => handleCheer(item.id)}
             className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-colors ${
-              cheered.has(item.id) ? 'text-rose-400 bg-rose-50' : 'text-stone-300 hover:bg-stone-50'
+              cheered.has(item.id) 
+              ? 'text-rose-400 bg-rose-50' 
+              : 'text-stone-300 hover:bg-stone-50'
             }`}
           >
             <Heart 
                 size={24} 
-                fill={cheered.has(item.id) || item.isMine ? "currentColor" : "none"} 
+                fill={cheered.has(item.id) ? "currentColor" : "none"} 
                 className="transition-transform active:scale-75"
             />
             <span className="text-xs font-medium">{item.cheers}</span>

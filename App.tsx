@@ -134,10 +134,11 @@ export default function App() {
   const completedChallenges = challenges.filter(c => c.completed); // In a real app, filter by "today"
 
   return (
-    <div className="min-h-screen bg-stone-50 text-stone-800 font-sans flex flex-col max-w-md mx-auto shadow-2xl overflow-hidden relative">
+    // h-[100dvh] ensures the app takes exactly the full viewport height, keeping the nav fixed at bottom
+    <div className="h-[100dvh] bg-stone-50 text-stone-800 font-sans flex flex-col max-w-md mx-auto shadow-2xl overflow-hidden relative">
       
       {/* Header */}
-      <header className="px-6 py-6 bg-white rounded-b-3xl shadow-sm z-10">
+      <header className="px-6 py-6 bg-white rounded-b-3xl shadow-sm z-10 shrink-0">
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center gap-2">
             <span className="text-xl font-bold text-stone-700">Todok</span>
@@ -171,7 +172,7 @@ export default function App() {
         </div>
       </header>
 
-      {/* Main Content */}
+      {/* Main Content - flex-1 allows it to fill remaining space and scroll */}
       <main className="flex-1 overflow-y-auto p-6 hide-scrollbar relative">
         {activeTab === 'home' ? (
             <div className="space-y-6 pb-24">
@@ -240,8 +241,8 @@ export default function App() {
         </button>
       )}
 
-      {/* Bottom Nav */}
-      <nav className="bg-white border-t border-stone-100 px-6 py-4 flex justify-around items-center z-30 pb-safe">
+      {/* Bottom Nav - Fixed at bottom naturally by flex layout */}
+      <nav className="bg-white border-t border-stone-100 px-6 py-4 flex justify-around items-center z-30 pb-safe shrink-0">
         <button 
             onClick={() => setActiveTab('home')}
             className={`flex flex-col items-center gap-1 ${activeTab === 'home' ? 'text-stone-800' : 'text-stone-300'}`}

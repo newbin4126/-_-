@@ -71,5 +71,9 @@ export const db = {
   cheerPost: (id: string) => {
      // Mocking cheering on a post (local only since no backend)
      console.log(`Cheered for ${id}`);
+  },
+
+  unCheerPost: (id: string) => {
+    console.log(`Un-cheered for ${id}`);
   }
 };
